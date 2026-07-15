@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: postgres-16.0
+    environment:
+      POSTGRES_DB: atlas_dev
+      POSTGRES_USER: atlas
+      POSTGRES_PASSWORD: atlas
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-16.0_data:/var/lib/postgresql/data
+
+  mysql:
+    image: mysql:8.4
+    container_name: mysql-8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: atlas
+      MYSQL_DATABASE: atlas_dev
+      MYSQL_USER: atlas
+      MYSQL_PASSWORD: atlas
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-8.4_data:/var/lib/mysql
+
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle-21-slim
+    environment:
+      ORACLE_PASSWORD: atlas
+      APP_USER: atlas
+      APP_USER_PASSWORD: atlas
+    ports:
+      - "1521:1521"
+      - "5500:5500"
+    volumes:
+      - oracle-21-slim_data:/opt/oracle/oradata
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis-7.0
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-7.0_data:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq-3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: atlas
+      RABBITMQ_DEFAULT_PASS: atlas
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq-3-management_data:/var/lib/rabbitmq
+
+volumes:
+  postgres-16.0_data:
+  mysql-8.4_data:
+  oracle-21-slim_data:
+  redis-7.0_data:
+  rabbitmq-3-management_data:
