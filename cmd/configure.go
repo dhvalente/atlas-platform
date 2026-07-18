@@ -24,6 +24,9 @@ var availableServices = []infraService{
 	{DisplayName: "Oracle XE", Version: "21-slim", ComposeName: "oracle"},
 	{DisplayName: "Redis", Version: "7-alpine", ComposeName: "redis"},
 	{DisplayName: "RabbitMQ", Version: "3-management", ComposeName: "rabbitmq"},
+	{DisplayName: "Kafka", Version: "3.8", ComposeName: "kafka"},
+	{DisplayName: "AKHQ", Version: "0.24.0", ComposeName: "akhq"},
+	{DisplayName: "Kafka Connect", Version: "3.8", ComposeName: "kafka-connect"},
 }
 
 var configureCmd = &cobra.Command{

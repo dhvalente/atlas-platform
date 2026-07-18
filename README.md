@@ -35,6 +35,9 @@ Esse comando:
 | Database | Oracle XE | `21-slim` | `gvenzl/oracle-xe:21-slim` |
 | Cache | Redis | `7-alpine` | `redis:7-alpine` |
 | Queue | RabbitMQ | `3-management` | `rabbitmq:3-management` |
+| Queue | Kafka | `3.8` | `bitnami/kafka:3.8` |
+| Queue | Kafka Connect | `3.8` | `bitnami/kafka-connect:3.8` |
+| Queue | AKHQ | `0.24.0` | `tchiotludo/akhq:0.24.0` |
 
 ## Instalação
 
