@@ -1,8 +1,6 @@
 # Atlas Platform CLI
 
 > Uma CLI local para acelerar o setup de infraestrutura de desenvolvimento.
->
-> Inspirado na experiência de plataforma de serviços (como o Fury do Mercado Livre), começando por um primeiro módulo focado em serviços Docker.
 
 ## Visão
 
