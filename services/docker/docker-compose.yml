@@ -58,7 +58,7 @@ services:
       - rabbitmq-3-management_data:/var/lib/rabbitmq
 
   kafka:
-    image: bitnami/kafka:3.8
+    image: bitnamilegacy/kafka:3.8.0-debian-12-r1
     container_name: kafka-3.8
     environment:
       KAFKA_CFG_NODE_ID: 1

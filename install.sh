@@ -1,20 +1,59 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-EXE_NAME="atlas"
+BIN_DIR="$HOME/atlas-bin"
 ATLAS_SERVICES_DIR="$HOME/.atlas/services/docker"
+EXE_NAME="atlas"
 
-echo "🔨 Compilando o projeto Atlas..."
-go build -o $EXE_NAME
+echo "Starting Atlas project..."
+cat <<'EOF'
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠀⢀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣴⣾⠟⠀⠀⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⡇⠀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣸⣿⣿⣿⡷⠛⠛⠛⠛⢀⠀⠠⣤⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⠃⠀⠀⠀⠀⠀⢢⣶⣿⣿⣷⣄⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣶⣤⣤⠀⠀⠀⢈⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠈⢿⣿⣿⣿⣿⣿⡇⠀⠀⣸⣿⣿⣿⡿⠁⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⢿⣿⣿⣿⣿⣶⣶⡿⠟⠿⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠛⠛⠛⢉⣉⠁⣶⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣴⡆⢈⣉⣁⣰⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣴⣿⣿⡇⠈⠉⠉⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣿⣯⣤⣤⣤⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡙⠛⠛⠛⢹⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⡶⣤⣤⣽⣿⡆⠀⣼⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠐⠊⠀⠀⠉⠙⠛⠃⠐⠛⠛⠒⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+EOF
 
-echo "🚚 Movendo executável para /usr/local/bin (pode pedir senha de sudo)..."
-sudo mv ./$EXE_NAME /usr/local/bin/$EXE_NAME
+go build -o "$EXE_NAME"
 
-echo "✅ Permissões de execução aplicadas."
-sudo chmod +x /usr/local/bin/$EXE_NAME
+if [ ! -d "$BIN_DIR" ]; then
+    echo "Creating directory $BIN_DIR..."
+    mkdir -p "$BIN_DIR"
+fi
 
-echo "🧩 Instalando catálogo de serviços Docker em $ATLAS_SERVICES_DIR..."
+echo "Moving executable to $BIN_DIR..."
+mv -f "./$EXE_NAME" "$BIN_DIR/$EXE_NAME"
+chmod +x "$BIN_DIR/$EXE_NAME"
+
+echo "Installing Docker services catalog at $ATLAS_SERVICES_DIR..."
 mkdir -p "$ATLAS_SERVICES_DIR"
-cp ./services/docker/docker-compose.yml "$ATLAS_SERVICES_DIR/docker-compose.yml"
+cp "./services/docker/docker-compose.yml" "$ATLAS_SERVICES_DIR/docker-compose.yml"
 
-echo "🎉 Instalação concluída! Você já pode usar o comando 'atlas' no terminal."
+SHELL_NAME="$(basename "${SHELL:-bash}")"
+if [ "$SHELL_NAME" = "zsh" ]; then
+    RC_FILE="$HOME/.zshrc"
+else
+    RC_FILE="$HOME/.bashrc"
+fi
+
+PATH_EXPORT_LINE="export PATH=\"\$PATH:$BIN_DIR\""
+if [ -f "$RC_FILE" ] && grep -Fq "$BIN_DIR" "$RC_FILE"; then
+    echo "Directory is already in PATH."
+else
+    echo "Adding $BIN_DIR to user PATH..."
+    touch "$RC_FILE"
+    printf '\n%s\n' "$PATH_EXPORT_LINE" >> "$RC_FILE"
+    echo "PATH updated. Open a NEW terminal to use atlas."
+fi
+
+echo "Install complete. Open a NEW terminal and run: atlas services configure"
